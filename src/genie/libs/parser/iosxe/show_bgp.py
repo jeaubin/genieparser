@@ -311,11 +311,7 @@ class ShowBgpSuperParser(ShowBgpSchema):
                 path_type = ''
                 if m.groupdict()['path_type']:
                     path_type = str(m.groupdict()['path_type'])
-                if path_type:
-                    status_codes = status_codes + path_type
-                else:
-                    status_codes = status_codes.rstrip()
-
+                status_codes = status_codes + path_type if path_type else status_codes.rstrip()
                 if m.groupdict()['prefix']:
                     prefix = str(m.groupdict()['prefix'])
                 index = 0
@@ -339,11 +335,7 @@ class ShowBgpSuperParser(ShowBgpSchema):
                 if m.groupdict()['next_hop']:
                     next_hop = m.groupdict()['next_hop']
 
-                if path_type:
-                    status_codes = status_codes + path_type
-                else:
-                    status_codes = status_codes.rstrip()
-
+                status_codes = status_codes + path_type if path_type else status_codes.rstrip()
                 if m.groupdict()['termination']:
                     termination = m.groupdict()['termination']
                     m3 = re.compile(r'(?: *(?P<path>[0-9\{\}\s]+))?'
@@ -426,11 +418,7 @@ class ShowBgpSuperParser(ShowBgpSchema):
                 if m.groupdict()['path_type']:
                     path_type = m.groupdict()['path_type']
 
-                if path_type:
-                    status_codes = status_codes + path_type
-                else:
-                    status_codes = status_codes.rstrip()
-
+                status_codes = status_codes + path_type if path_type else status_codes.rstrip()
                 if m.groupdict()['path']:
                     path_1 = m.groupdict()['path']
                     m3 = re.compile(r'(?: *(?P<path_inner>[0-9\{\}\s\,]+))?'
@@ -586,16 +574,15 @@ class ShowBgpAll(ShowBgpSuperParser, ShowBgpSchema):
     exclude = ['bgp_table_version']
 
     def cli(self, address_family='', output=None):
-        ret_dict = {}
-        restricted_list = ['ipv4 unicast', 'ipv6 unicast']
-
         if output is None:
             # Build command
             if address_family:
+                restricted_list = ['ipv4 unicast', 'ipv6 unicast']
+
                 if address_family not in restricted_list:
                     cmd = self.cli_command[0].format(address_family=address_family)
                 else:
-                    return ret_dict
+                    return {}
             else:
                 cmd = self.cli_command[1]
             # Execute command
@@ -660,12 +647,13 @@ class ShowBgp(ShowBgpSuperParser, ShowBgpSchema):
 
         if output is None:
             # Build command
-            if address_family and vrf:
-                cmd = self.cli_command[0].format(address_family=address_family,
-                                                 vrf=vrf)
-            elif address_family and rd:
-                cmd = self.cli_command[1].format(address_family=address_family,
-                                                 rd=rd)
+            if address_family:
+                if vrf:
+                    cmd = self.cli_command[0].format(address_family=address_family,
+                                                     vrf=vrf)
+                elif rd:
+                    cmd = self.cli_command[1].format(address_family=address_family,
+                                                     rd=rd)
             # Execute command
             show_output = self.device.execute(cmd)
         else:

@@ -42,11 +42,7 @@ class ShowAspDrop(ShowAspDropSchema):
     cli_command = 'show asp drop'
 
     def cli(self, output=None):
-        if output is None:
-            out = self.device.execute(self.cli_command)
-        else:
-            out = output
-
+        out = self.device.execute(self.cli_command) if output is None else output
         parsed_dict = {}
 
         # -----------------------------------------------

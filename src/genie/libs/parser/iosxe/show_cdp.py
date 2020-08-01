@@ -196,11 +196,7 @@ class ShowCdpNeighborsDetail(ShowCdpNeighborsDetailSchema):
 
     def cli(self, output=None):
 
-        if output is None:
-            out = self.device.execute(self.cli_command)
-        else:
-            out = output
-
+        out = self.device.execute(self.cli_command) if output is None else output
         # Device ID: R7(9QBDKB58F76)
         deviceid_re = re.compile(r'Device\s+ID:\s*(?P<device_id>\S+)')
 
@@ -381,7 +377,7 @@ class ShowCdpNeighborsDetail(ShowCdpNeighborsDetailSchema):
                 elif not line or advertver_re.match(line):
 
                     parsed_sw_ver = '\n'.join(sw_version)
-                    
+
                     result = software_version_re.match(parsed_sw_ver)
 
                     devices_dict['software_version'] = \

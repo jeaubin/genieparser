@@ -109,14 +109,11 @@ class ShowArp(ShowArpSchema):
                     final_dict = ret_dict.setdefault('interfaces', {}).setdefault(
                         interface, {}).setdefault('ipv4', {}).setdefault(
                         'neighbors', {}).setdefault(address, {})
-                    
+
                     final_dict['ip'] = address
                     final_dict['link_layer_address'] = group['mac']
                     final_dict['type'] = group['type']
-                    if group['age'] == '-':
-                        final_dict['origin'] = 'static'
-                    else:
-                        final_dict['origin'] = 'dynamic'
+                    final_dict['origin'] = 'static' if group['age'] == '-' else 'dynamic'
                 else:
                     final_dict = ret_dict.setdefault(
                         'global_static_table', {}).setdefault(address, {})
@@ -139,10 +136,7 @@ class ShowIpArp(ShowArp):
 
     def cli(self, vrf='', output=None):
         if output is None:
-            if vrf:
-                cmd = self.cli_command[1].format(vrf=vrf)
-            else:
-                cmd = self.cli_command[0]
+            cmd = self.cli_command[1].format(vrf=vrf) if vrf else self.cli_command[0]
             out = self.device.execute(cmd)
         else:
             out = output

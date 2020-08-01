@@ -170,11 +170,7 @@ class ShowEigrpNeighborsSuperParser(ShowEigrpNeighborsSchema):
                 if not eigrp_instance:
                     eigrp_instance = ''
 
-                if not name:
-                    named_mode = False
-                else:
-                    named_mode = True
-
+                named_mode = False if not name else True
                 eigrp_interface = Common.convert_intf_name\
                     (intf=group['eigrp_interface'])
 
@@ -204,7 +200,7 @@ class ShowEigrpNeighborsSuperParser(ShowEigrpNeighborsSchema):
                 ip_dict['last_seq_number'] = int(group['last_seq_number'])
 
             # 1   Link Local Address:     Gi0/0/0/1.90      12 01:36:14   11   200  0  28
-            result = r5.match(line)            
+            result = r5.match(line)
             if result:
 
                 group = result.groupdict()
@@ -244,11 +240,7 @@ class ShowEigrpNeighborsSuperParser(ShowEigrpNeighborsSchema):
                     .setdefault('address_family', {})\
                     .setdefault(address_family, {})
 
-                if not name:
-                    named_mode = False
-                else:
-                    named_mode = True
-
+                named_mode = False if not name else True
                 address_family_dict['name'] = name
                 address_family_dict['named_mode'] = named_mode
 
@@ -282,10 +274,7 @@ class ShowIpEigrpNeighbors(ShowEigrpNeighborsSuperParser, ShowEigrpNeighborsSche
 
     def cli(self, vrf='', output=None):
         if output is None:
-            if vrf:
-                cmd = self.cli_command[0].format(vrf=vrf)
-            else:
-                cmd = self.cli_command[1]
+            cmd = self.cli_command[0].format(vrf=vrf) if vrf else self.cli_command[1]
             show_output = self.device.execute(cmd)
 
         else:
@@ -307,10 +296,7 @@ class ShowIpv6EigrpNeighbors(ShowEigrpNeighborsSuperParser, ShowEigrpNeighborsSc
 
     def cli(self, vrf='', output=None):
         if output is None:
-            if vrf:
-                cmd = self.cli_command[0].format(vrf=vrf)
-            else:
-                cmd = self.cli_command[1]
+            cmd = self.cli_command[0].format(vrf=vrf) if vrf else self.cli_command[1]
             show_output = self.device.execute(cmd)
 
         else:
@@ -657,10 +643,7 @@ class ShowIpEigrpNeighborsDetail(ShowIpEigrpNeighborsDetailSuperParser,
 
     def cli(self, vrf='', output=None):
         if output is None:
-            if vrf:
-                cmd = self.cli_command[0].format(vrf=vrf)
-            else:
-                cmd = self.cli_command[1]
+            cmd = self.cli_command[0].format(vrf=vrf) if vrf else self.cli_command[1]
             show_output = self.device.execute(cmd)
 
         else:

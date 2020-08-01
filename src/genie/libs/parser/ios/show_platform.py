@@ -15,6 +15,7 @@
     * show processes cpu | include <WORD>
 
 """
+
 # python
 import re
 
@@ -54,19 +55,19 @@ from genie.libs.parser.iosxe.show_platform import \
     ShowBootvar as ShowBootvar_iosxe
 
 
-class ShowVersion(ShowVersion_iosxe):
+
+
+class ShowVersion((ShowVersion_iosxe)):
     """Parser for show version
     """
     exclude = ['system_restarted_at', 'uptime_this_cp', 'uptime']
-    pass
 
 
-class Dir(Dir_iosxe):
+
+class Dir((Dir_iosxe)):
     """Parser for dir
     """
     exclude = ['last_modified_date', 'bytes_free', 'files']
-    pass
-
 
 class ShowRedundancyIosSchema(MetaParser):
     """Schema for show redundancy """

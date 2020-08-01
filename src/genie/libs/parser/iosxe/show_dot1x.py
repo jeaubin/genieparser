@@ -86,11 +86,7 @@ class ShowDot1xAllDetail(ShowDot1xAllDetailSchema):
     cli_command = 'show dot1x all details'
 
     def cli(self,output=None):
-        if output is None:
-            out = self.device.execute(self.cli_command)
-        else:
-            out = output
-
+        out = self.device.execute(self.cli_command) if output is None else output
         # initial return dictionary
         ret_dict = {}
 
@@ -108,7 +104,7 @@ class ShowDot1xAllDetail(ShowDot1xAllDetailSchema):
         for line in out.splitlines():
             line = line.strip()
             line = line.replace('\t', '    ')
-            
+
             # Sysauthcontrol                 Enabled
             m = p1.match(line)
             if m:
@@ -307,10 +303,7 @@ class ShowDot1xAllStatistics(ShowDot1xAllStatisticsSchema):
     cli_command = 'show dot1x all statistics'
 
     def cli(self,output=None):
-        if output is None:
-            out = self.device.execute(self.cli_command)
-        else:
-            out = output
+        out = self.device.execute(self.cli_command) if output is None else output
         # initial return dictionary
         ret_dict = {}
 
@@ -325,7 +318,7 @@ class ShowDot1xAllStatistics(ShowDot1xAllStatisticsSchema):
 
             # remove tab, replace with space
             line = line.replace('\t', ' ')
-            
+
             # Dot1x Supplicant Port Statistics for GigabitEthernet1/0/9
             # Dot1x Authenticator Port Statistics for GigabitEthernet0/1
             m = p1.match(line)

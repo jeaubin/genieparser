@@ -82,11 +82,7 @@ class ShowNtpAssociations(ShowNtpAssociationsSchema):
     cli_command = 'show ntp associations'
 
     def cli(self, output=None):
-        if output is None:
-            out = self.device.execute(self.cli_command)
-        else:
-            out = output
-
+        out = self.device.execute(self.cli_command) if output is None else output
         # initial variables
         ret_dict = {}
         peer_list = []
@@ -121,15 +117,9 @@ class ShowNtpAssociations(ShowNtpAssociationsSchema):
                 peer = groups['remote']
                 # appending ip address in order to trace data in the dictionary for p2 or p3
                 peer_list.append(peer)
-                if '~' == groups['configured']:
-                    configured = True
-                else:
-                    configured = False
+                configured = True if '~' == groups['configured'] else False
                 local_mode = 'client'
-                if groups['mode_code']:
-                    mode = groups['mode_code']
-                else:
-                    mode = 'None'
+                mode = groups['mode_code'] if groups['mode_code'] else 'None'
                 try:
                     receive_time = int(groups['receive_time'])
                 except:
@@ -151,16 +141,15 @@ class ShowNtpAssociations(ShowNtpAssociationsSchema):
                                   'jitter': float(groups['disp'])})
 
                 # ops clock_state structure
-                if groups['mode_code']:
-                    if '*' in groups['mode_code']:
-                        clock_dict = ret_dict.setdefault('clock_state', {}).setdefault('system_status', {})
-                        clock_dict['clock_state'] = 'synchronized'
-                        clock_dict['clock_stratum'] = int(groups['stratum'])
-                        clock_dict['associations_address'] = peer
-                        clock_dict['root_delay'] = float(groups['delay'])
-                        clock_dict['clock_offset'] = float(groups['offset'])
-                        clock_dict['clock_refid'] = groups['refid']
-                        clock_dict['associations_local_mode'] = local_mode
+                if groups['mode_code'] and '*' in groups['mode_code']:
+                    clock_dict = ret_dict.setdefault('clock_state', {}).setdefault('system_status', {})
+                    clock_dict['clock_state'] = 'synchronized'
+                    clock_dict['clock_stratum'] = int(groups['stratum'])
+                    clock_dict['associations_address'] = peer
+                    clock_dict['root_delay'] = float(groups['delay'])
+                    clock_dict['clock_offset'] = float(groups['offset'])
+                    clock_dict['clock_refid'] = groups['refid']
+                    clock_dict['associations_local_mode'] = local_mode
                 continue
 
             # * sys.peer, # selected, + candidate, - outlyer, x falseticker, ~ configured

@@ -219,10 +219,7 @@ class ShowClnsInterface(ShowClnsInterfaceSchema):
             m = p8.match(line)
             if m:
                 group = m.groupdict()
-                if not group['process_id']:
-                    process_id = ""
-                else:
-                    process_id = group['process_id']
+                process_id = "" if not group['process_id'] else group['process_id']
                 isis_dict = clns_dict.setdefault('routing_protocol',{}).\
                                       setdefault(group['routing_protocol'],{}).\
                                       setdefault('process_id' ,{}).setdefault(process_id, {})
@@ -370,11 +367,7 @@ class ShowClnsProtocol(ShowClnsProtocolSchema):
     cli_command = 'show clns protocol'
 
     def cli(self,output=None):
-        if output is None:
-            out = self.device.execute(self.cli_command)
-        else:
-            out = output
-
+        out = self.device.execute(self.cli_command) if output is None else output
         # initial return dictionary
         result_dict = {}
         manaual_area_address_flag = False
@@ -591,11 +584,7 @@ class ShowClnsNeighborsDetail(ShowClnsNeighborsDetailSchema):
     exclude = ['holdtime', 'uptime', 'chars_in', 'chars_out', 'pkts_in', 'pkts_out']
 
     def cli(self,output=None):
-        if output is None:
-            out = self.device.execute(self.cli_command)
-        else:
-            out = output
-
+        out = self.device.execute(self.cli_command) if output is None else output
         # initial return dictionary
         result_dict = {}
 
@@ -623,7 +612,7 @@ class ShowClnsNeighborsDetail(ShowClnsNeighborsDetailSchema):
         p8 = re.compile(r'^Topology: +(?P<topology>[\S\s]+)$')
         #   Interface name: GigabitEthernet4
         p9 = re.compile(r'^Interface +name: +(?P<interface>\S+)$')
-        
+
         for line in out.splitlines():
             line = line.strip()
 
@@ -750,11 +739,7 @@ class ShowClnsIsNeighborsDetail(ShowClnsIsNeighborsDetailSchema):
     cli_command = 'show clns is-neighbors detail'
 
     def cli(self,output=None):
-        if output is None:
-            out = self.device.execute(self.cli_command)
-        else:
-            out = output
-
+        out = self.device.execute(self.cli_command) if output is None else output
         # initial return dictionary
         result_dict = {}
 
