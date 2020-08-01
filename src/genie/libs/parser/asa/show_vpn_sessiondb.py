@@ -229,9 +229,9 @@ class ShowVPNSessionDBSummary(ShowVPNSessionDBSummarySchema):
                 for k in ['active', 'cumulative', 'peak_concurrent', 'inactive']:
                     if group[k]:
                         curr_dict[k] = int(group[k])
-                        
+
                 vpn_session_dict = ret_dict['summary']['VPN Session']['session']
-                        
+
                 continue
 
             # SSL/TLS/DTLS               :    127 :        432 :         205 :        0
@@ -242,20 +242,25 @@ class ShowVPNSessionDBSummary(ShowVPNSessionDBSummarySchema):
                 group = m.groupdict()
                 name = group['name']
 
-                if name == 'SSL/TLS/DTLS':
+                if (
+                    name != 'SSL/TLS/DTLS'
+                    and name != 'Browser'
+                    and name == 'IKEv2 IPsec'
+                    and 'Site-to-Site VPN' in vpn_session_dict
+                ):
+                    curr_dict = vpn_session_dict['Site-to-Site VPN'].setdefault('type', {}).\
+                                                                     setdefault(name, {})
+                elif (
+                    name != 'Browser'
+                    and name == 'IKEv2 IPsec'
+                    or name == 'SSL/TLS/DTLS'
+                ):
                     curr_dict = vpn_session_dict['AnyConnect Client'].setdefault('type', {}).\
                                                                       setdefault(name, {})
+
                 elif name == 'Browser':
                     curr_dict = vpn_session_dict['Clientless VPN'].setdefault('type', {}).\
                                                                    setdefault(name, {})
-                elif name == 'IKEv2 IPsec':
-                    if 'Site-to-Site VPN' in vpn_session_dict:
-                        curr_dict = vpn_session_dict['Site-to-Site VPN'].setdefault('type', {}).\
-                                                                         setdefault(name, {})
-                    else:
-                        curr_dict = vpn_session_dict['AnyConnect Client'].setdefault('type', {}).\
-                                                                          setdefault(name, {})
-
                 for k in ['active', 'cumulative', 'peak_concurrent', 'inactive']:
                     if group[k]:
                         curr_dict[k] = int(group[k])
@@ -654,10 +659,7 @@ class ShowVpnSessiondbAnyconnect(ShowVpnSessiondbSuper, ShowVpnSessiondbSuperSch
 
     def cli(self, sort='', output=None):
         if output is None:
-            if sort:
-                cmd = self.cli_command[1].format(sort=sort)
-            else:
-                cmd = self.cli_command[0]
+            cmd = self.cli_command[1].format(sort=sort) if sort else self.cli_command[0]
             out = self.device.execute(cmd)
         else:
             out = output
@@ -676,9 +678,5 @@ class ShowVpnSessiondbWebvpn(ShowVpnSessiondbSuper, ShowVpnSessiondbSuperSchema)
     cli_command = 'show vpn-sessiondb webvpn'
 
     def cli(self, output=None):
-        if output is None:
-            out = self.device.execute(self.cli_command)
-        else:
-            out = output
-
+        out = self.device.execute(self.cli_command) if output is None else output
         return super().cli(output=out)

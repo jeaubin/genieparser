@@ -14,6 +14,7 @@
     # TODO: Need find replacement command for IOSXE 'show interface <intf> counters'
 """
 
+
 # python
 import re
 
@@ -42,7 +43,9 @@ from genie.libs.parser.iosxe.show_interface import \
 from genie.libs.parser.utils.common import Common
 
 
-class ShowInterfaces(ShowInterfaces_iosxe):
+
+
+class ShowInterfaces((ShowInterfaces_iosxe)):
     """parser for show interfaces"""
     exclude = ['in_octets', 'in_pkts', 'out_octets', 'out_pkts',
         'in_rate', 'in_rate_pkts', 'out_rate', 'out_rate_pkts',
@@ -54,14 +57,12 @@ class ShowInterfaces(ShowInterfaces_iosxe):
         'phys_address', 'out_lost_carrier', '(Tunnel.*)',
         'input_queue_flushes', 'reliability', 'in_runts']
 
-    pass
 
 
-class ShowIpInterfaceBrief(ShowIpInterfaceBrief_iosxe):
+
+class ShowIpInterfaceBrief((ShowIpInterfaceBrief_iosxe)):
     """Parser for: show ip interface brief"""
     exclude = ['method', '(Tunnel.*)']
-    pass
-
 
 class ShowIpInterfaceBriefPipeVlan(ShowIpInterfaceBriefPipeVlan_iosxe):
     """Parser for: show ip interface brief | include Vlan"""
@@ -73,28 +74,28 @@ class ShowIpInterfaceBriefPipeIp(ShowIpInterfaceBriefPipeIp_iosxe):
     pass
 
 
-class ShowIpInterface(ShowIpInterface_iosxe):
+
+
+class ShowIpInterface((ShowIpInterface_iosxe)):
     """Parser for show ip interface"""
     exclude = ['unnumbered', 'address_determined_by',
                '(Tunnel.*)', 'joins', 'leaves']
-    pass
 
 
-class ShowIpv6Interface(ShowIpv6Interface_iosxe):
+
+class ShowIpv6Interface((ShowIpv6Interface_iosxe)):
     """Parser for show ipv6 interface"""
     exclude = ['unnumbered', 'interface_ref',
                '(Tunnel.*)', 'joined_group_addresses', 'ipv6']
-    pass
 
 
-class ShowInterfacesAccounting(ShowInterfacesAccounting_iosxe):
+
+class ShowInterfacesAccounting((ShowInterfacesAccounting_iosxe)):
     """Parser for:
         show interfaces accounting
         show interfaces <interface> accounting
     """
     exclude = ['pkts_in', 'pkts_out', 'chars_in', 'chars_out']
-    pass
-
 
 class ShowInterfacesCounters(ShowInterfacesCounters_iosxe):
     """Parser for show interfaces <interface> counters"""
@@ -110,7 +111,7 @@ class ShowInterfacesTrunk(ShowInterfacesTrunk_iosxe):
     """Parser for show interfaces trunk"""
     pass
 
-    
+
 class ShowInterfacesStats(ShowInterfacesStats_iosxe):
     """Parser for:
         show interfaces <interface> stats

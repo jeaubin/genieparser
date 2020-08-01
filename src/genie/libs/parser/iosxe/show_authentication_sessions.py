@@ -279,7 +279,7 @@ class ShowAuthenticationSessionsInterfaceDetails(ShowAuthenticationSessionsInter
         #   Security Policy:  Should Secure
         #   Security Status:  Link Unsecure
         p10 = re.compile(r'^Security +(?P<security_name>\S+): +(?P<policy_status>[\S ]+)$')
-        
+
         # *      Security Policy:  None      Security Status:  Link Unsecured*
         p10_1 = re.compile(r'(.*)\s+ Security +(?P<security_name>\w+):(\s+)* +'
                 r'(?P<policy_status>\w+(\s\w+)?)(\s+)+ Security +(?P<security_name2>\w+):(\s+)* '
@@ -336,7 +336,7 @@ class ShowAuthenticationSessionsInterfaceDetails(ShowAuthenticationSessionsInter
                             {'security_status': group['policy_status']})
 
                 continue
-                
+
             # *      Security Policy:  None      Security Status:  Link Unsecured*
             m = p10_1.match(line)
             if m:
@@ -352,7 +352,7 @@ class ShowAuthenticationSessionsInterfaceDetails(ShowAuthenticationSessionsInter
                     security_dict.update({'security_policy': group['policy_status']})
                     security_dict.update({'security_status': group['policy_status2']})
                 continue
-                        
+
 
             # Session timeout:  43200s(local), Remaining: 31799s
             # Session timeout:  N/A
@@ -411,7 +411,7 @@ class ShowAuthenticationSessionsInterfaceDetails(ShowAuthenticationSessionsInter
                     if key == 'ip_address':
                         key = 'ipv4_address'
 
-                    if 'interfaces' in ret_dict.keys():
+                    if 'interfaces' in ret_dict:
                         if key == 'mac_address':
                             mac_dict = intf_dict.setdefault(group['value'], {})
                         elif key == 'iif_id':
@@ -428,16 +428,16 @@ class ShowAuthenticationSessionsInterfaceDetails(ShowAuthenticationSessionsInter
                         mac_dict = ret_dict.setdefault('interfaces', {})
                         value_dict = mac_dict.setdefault(group['value'], {})
                         intf_dict = value_dict.setdefault('mac_address', {})
-                        
-                elif (key not in known_list) and policies_flag:
+
+                elif policies_flag:
                     policies_dict = mac_dict.setdefault('server_policies', {})
                     index_dict = policies_dict.setdefault(index, {})
                     index_dict.update({'name': group['argument']})
                     index_dict.update({'policies': group['value']})
                     index += 1
-                    
+
                 continue
- 
+
             # Template: CRITICAL_VLAN (priority 150)
             m = p3.match(line)
             if m:
